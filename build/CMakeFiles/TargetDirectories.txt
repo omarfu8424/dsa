@@ -1,0 +1,15 @@
+/home/furuer/learning/dsa/build/CMakeFiles/String.dir
+/home/furuer/learning/dsa/build/CMakeFiles/string_main.dir
+/home/furuer/learning/dsa/build/CMakeFiles/List_main.dir
+/home/furuer/learning/dsa/build/CMakeFiles/List_polynominal.dir
+/home/furuer/learning/dsa/build/CMakeFiles/hello.dir
+/home/furuer/learning/dsa/build/CMakeFiles/sum_basic.dir
+/home/furuer/learning/dsa/build/CMakeFiles/sort_basic.dir
+/home/furuer/learning/dsa/build/CMakeFiles/stack_expression.dir
+/home/furuer/learning/dsa/build/CMakeFiles/stack_convert.dir
+/home/furuer/learning/dsa/build/CMakeFiles/stack_matchBraces.dir
+/home/furuer/learning/dsa/build/CMakeFiles/fib_main.dir
+/home/furuer/learning/dsa/build/CMakeFiles/fib_basic.dir
+/home/furuer/learning/dsa/build/CMakeFiles/search_basic.dir
+/home/furuer/learning/dsa/build/CMakeFiles/edit_cache.dir
+/home/furuer/learning/dsa/build/CMakeFiles/rebuild_cache.dir

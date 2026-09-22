@@ -1,0 +1,1 @@
+/usr/bin/g++ -g -Wl,--dependency-file=CMakeFiles/fib_main.dir/link.d CMakeFiles/fib_main.dir/Fib/main.cpp.o -o fib_main

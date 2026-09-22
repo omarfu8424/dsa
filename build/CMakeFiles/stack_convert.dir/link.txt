@@ -1,0 +1,1 @@
+/usr/bin/g++ -g -Wl,--dependency-file=CMakeFiles/stack_convert.dir/link.d CMakeFiles/stack_convert.dir/Stack/convert.cpp.o -o stack_convert

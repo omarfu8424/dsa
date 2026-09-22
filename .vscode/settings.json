@@ -1,0 +1,32 @@
+{
+    "cmake.debugConfig": {
+        "setupCommands": [
+            {
+                "description": "Disable debuginfod server access",
+                "text": "set debuginfod urls",
+                "ignoreFailures": true
+            }
+        ]
+    },
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "clangd.arguments": [
+        "--clang-tidy",
+        "--completion-style=detailed", // 显示详细信息
+        "--inlay-hints=false", // 禁用参数提示
+        "--log=error",
+        "--pch-storage=disk",
+        "--header-insertion=iwyu",
+        "--j=4",
+        "--background-index",
+        "--query-driver=/usr/bin/g++",
+        "--compile-commands-dir=${workspaceFolder}/build",
+    ],
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": false
+    },
+    "editor.suggest.showFunctions": true,
+    "editor.inlayHints.enabled": "on",
+
+}
