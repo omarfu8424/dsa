@@ -1,0 +1,21 @@
+# 构建目录
+build/
+
+# 编译产物
+*.o
+*.out
+*.exe
+a.out
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# IDE
+.vscode/
+.idea/
+
+# 系统文件
+.DS_Store
