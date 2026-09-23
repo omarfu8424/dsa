@@ -1,1 +1,0 @@
-/usr/bin/g++ -g -Wl,--dependency-file=CMakeFiles/sort_basic.dir/link.d CMakeFiles/sort_basic.dir/sort/basic.cpp.o -o sort_basic

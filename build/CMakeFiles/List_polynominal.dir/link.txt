@@ -1,1 +1,0 @@
-/usr/bin/g++ -g -Wl,--dependency-file=CMakeFiles/List_polynominal.dir/link.d CMakeFiles/List_polynominal.dir/List/polynominal.cpp.o -o List_polynominal
