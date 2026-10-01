@@ -49,6 +49,7 @@ add_executable(sum_basic sum/basic.cpp)
 add_executable(sort_basic sort/basic.cpp)
 
 # 可执行文件：Stack
+add_executable(stack_RPN Stack/RPN.cpp)
 add_executable(stack_expression Stack/expression.cpp)
 add_executable(stack_convert Stack/convert.cpp)
 add_executable(stack_matchBraces Stack/matchBraces.cpp)
