@@ -8,6 +8,7 @@ Checks: '
   modernize-*,
   cppcoreguidelines-*,
   misc-*,
+  -bugprone-easily-swappable-parameters,
   -readability-magic-numbers,
   -readability-identifier-length,
   -modernize-use-trailing-return-type,
@@ -54,11 +55,11 @@ CheckOptions:
   - key: readability-identifier-naming.PrivateMemberPrefix
     value: '_'
 
-  # ---------- 其他实用配置 ----------
-  # 将“未使用的参数”降级为警告而非报错（方便调试）
+  # ---------- 其他配置 ----------
+  # 将未使用的参数降级为警告而非报错（方便调试）
   - key: misc-unused-parameters.StrictMode
     value: false
 
-  # 允许在 if/else 中不加大括号（如果只有一行），但默认还是建议加，此处保持默认
+  # 允许在 if/else 中不加大括号（如果只有一行
   - key: readability-braces-around-statements.ShortStatementLines
-    value: 0
+    value: 1
