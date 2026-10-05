@@ -1,7 +1,9 @@
 #include <cctype>
 #include <cmath>
 #include <cstdlib>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <stack>
 #include <string>
 #include <unordered_map>
@@ -21,9 +23,8 @@ struct Prio {
 };
 
 const unordered_map<char, Prio> PRIO = {
-    {'+', {3, 2}}, {'-', {3, 2}}, {'*', {5, 4}}, {'/', {5, 4}},
-    {'^', {7, 8}}, {'!', {9, 9}}, {'(', {1, 9}}, {')', {9, 1}},
-    {'\0', {0, 0}}};
+    {'+', {3, 2}}, {'-', {3, 2}}, {'*', {5, 4}}, {'/', {5, 4}}, {'^', {7, 8}},
+    {'!', {9, 9}}, {'(', {1, 9}}, {')', {9, 1}}, {'\0', {0, 0}}};
 
 // get valid number from a expression
 void readNumber(char *&p, stack<double> &o) {
@@ -41,6 +42,11 @@ void readNumber(char *&p, stack<double> &o) {
     }
   }
   o.push(num);
+}
+string formatNum(double x) {
+  ostringstream oss;
+  oss << setprecision(15) << x;
+  return oss.str();
 }
 double calcu(double num, char op) {
   double res = 0.0;
@@ -85,7 +91,7 @@ double evaluate(char *&p, stack<string> &rpn) {
     if (isdigit(static_cast<unsigned char>(*p)) !=
         0) { // following number should be push to the opnd stack
       readNumber(p, opnd);
-      rpn.push(to_string(opnd.top()));
+      rpn.push(formatNum(opnd.top()));
     } else {
       int diff = PRIO.at(*p).icp - PRIO.at(optr.top()).isp;
       int sign = static_cast<int>(diff > 0) - static_cast<int>(diff < 0);
@@ -101,10 +107,12 @@ double evaluate(char *&p, stack<string> &rpn) {
       case -1: // icp < isp: pop and calculate
         char op = optr.top();
         optr.pop();
-        rpn.push(to_string(op));
+        rpn.emplace(1, op);
         if (op == '!') {
+          double num = opnd.top();
           opnd.pop();
-          opnd.push(calcu(opnd.top(), op));
+          opnd.push(calcu(num, op));
+          
         } else {
           double opnd2 = opnd.top();
           opnd.pop();
@@ -121,10 +129,22 @@ double evaluate(char *&p, stack<string> &rpn) {
 } // namespace
 
 int main() {
-  // test readNumber
-  char a[] = "(2+3)*5";
-  char *p = a;
+  string a;
+  getline(cin, a);
+  char *p = a.data();
+
   stack<string> rpn;
-  cout << evaluate(p, rpn) << '\n';
+  stack<string> rpnExpression;
+  cout << "ANS: " << evaluate(p, rpn) << '\n';
+  cout << "RPN: ";
+  while (!rpn.empty()) {
+    rpnExpression.push(rpn.top());
+    rpn.pop();
+  }
+  while (!rpnExpression.empty()) {
+    cout << rpnExpression.top() << ' ';
+    rpnExpression.pop();
+  }
+  cout << '\n';
   return 0;
 }
