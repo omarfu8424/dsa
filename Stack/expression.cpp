@@ -21,15 +21,13 @@ struct Prio {
 };
 
 const unordered_map<char, Prio> PRIO = {
-    {'+', {3, 4}}, {'-', {3, 4}}, {'*', {5, 6}}, {'/', {5, 6}}, {'^', {7, 8}},
-    {'!', {8, 9}}, {'(', {1, 9}}, {')', {9, 2}}, {'\0', {0, 0}}};
+    {'+', {3, 2}}, {'-', {3, 2}}, {'*', {5, 4}}, {'/', {5, 4}},
+    {'^', {7, 8}}, {'!', {9, 9}}, {'(', {1, 9}}, {')', {9, 1}},
+    {'\0', {0, 0}}};
 
 // get valid number from a expression
 void readNumber(char *&p, stack<double> &o) {
   double num = 0.0;
-  while (isdigit(static_cast<unsigned char>(*p)) == 0) {
-    p++;
-  }
   while (isdigit(static_cast<unsigned char>(*p)) != 0) {
     num = (num * 10) + (*p - '0');
     p++;
@@ -89,7 +87,7 @@ double evaluate(char *&p, stack<string> &rpn) {
       readNumber(p, opnd);
       rpn.push(to_string(opnd.top()));
     } else {
-      int diff = PRIO.at(optr.top()).icp - PRIO.at(*p).isp;
+      int diff = PRIO.at(*p).icp - PRIO.at(optr.top()).isp;
       int sign = static_cast<int>(diff > 0) - static_cast<int>(diff < 0);
       switch (sign) {
       case 1: // icp > isp: push
@@ -102,13 +100,15 @@ double evaluate(char *&p, stack<string> &rpn) {
         break;
       case -1: // icp < isp: pop and calculate
         char op = optr.top();
+        optr.pop();
         rpn.push(to_string(op));
         if (op == '!') {
+          opnd.pop();
           opnd.push(calcu(opnd.top(), op));
         } else {
-          double opnd1 = opnd.top();
-          opnd.pop();
           double opnd2 = opnd.top();
+          opnd.pop();
+          double opnd1 = opnd.top();
           opnd.pop();
           opnd.push(calcu(opnd1, opnd2, op));
         }
@@ -125,6 +125,6 @@ int main() {
   char a[] = "(2+3)*5";
   char *p = a;
   stack<string> rpn;
-  evaluate(p, rpn);
+  cout << evaluate(p, rpn) << '\n';
   return 0;
 }
