@@ -53,6 +53,7 @@ add_executable(stack_RPN Stack/RPN.cpp)
 add_executable(stack_expression Stack/expression.cpp)
 add_executable(stack_convert Stack/convert.cpp)
 add_executable(stack_matchBraces Stack/matchBraces.cpp)
+add_executable(stack_queen Stack/queen.cpp)
 
 # 可执行文件：Fib/main
 add_executable(fib_main Fib/main.cpp)
