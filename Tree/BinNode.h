@@ -29,7 +29,7 @@ protected:
       if (root->_rc) {
         s.push(root->_rc);
       }
-      if (root->_lc) {  // 这样左孩子先被visit
+      if (root->_lc) { // 这样左孩子先被visit
         s.push(root->_lc);
       }
     }
@@ -43,12 +43,36 @@ protected:
       return;
     }
     visit(root);
-    if (root->_lc) {
-      travPre_recursion(root->_lc, visit);
+    travPre_recursion(root->_lc, visit);
+    travPre_recursion(root->_rc, visit);
+  }
+  // 中序遍历 l-root-r
+  // 迭代
+  template <typename VST>
+  void travIn_iteration(BinNodePosi<T> root, VST &visit) {
+    std::stack<BinNodePosi<T>> s;
+    BinNodePosi<T> curr = root;
+
+    while (!s.empty() || curr) {
+      while(curr){
+        s.push(curr);
+        curr = curr->_lc;
+      }
+      // s.top()为当前未访问的最左侧结点
+      curr = s.top();
+      s.pop(); visit(curr);
+      curr = curr->_rc;
     }
-    if (root->_rc) {
-      travPre_recursion(root->_rc, visit);
+  }
+  // 递归
+  template <typename VST>
+  void travIn_recursion(BinNodePosi<T> root, VST &visit) {
+    if (!root) {
+      return;
     }
+    travIn_recursion(root->_lc, visit);
+    visit(root);
+    travIn_recursion(root->_rc, visit);
   }
 
 public:
@@ -80,17 +104,21 @@ public:
 // 层次遍历 BFS
 template <typename T>
 template <typename VST>
-void BinNode<T>::travLevel(VST &visit){
+void BinNode<T>::travLevel(VST &visit) {
   std::queue<BinNodePosi<T>> q;
-  if(this){
+  if (this) {
     q.push(this);
   }
   while (!q.empty()) {
     BinNodePosi<T> root = q.front();
     visit(root);
     q.pop();
-    if(root->_lc){q.push(root->_lc);}
-    if(root->_rc){q.push(root->_rc);}
+    if (root->_lc) {
+      q.push(root->_lc);
+    }
+    if (root->_rc) {
+      q.push(root->_rc);
+    }
   }
 }
 // 先序遍历 PLR
