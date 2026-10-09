@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <queue>
 #include <stack>
 template <typename T> struct BinNode;
 template <typename T> using BinNodePosi = BinNode<T> *;
@@ -76,7 +77,22 @@ public:
   template <typename VST> void travIn(VST &visit);    // 中序遍历
   template <typename VST> void travPost(VST &visit);  // 后序遍历
 };
-
+// 层次遍历 BFS
+template <typename T>
+template <typename VST>
+void BinNode<T>::travLevel(VST &visit){
+  std::queue<BinNodePosi<T>> q;
+  if(this){
+    q.push(this);
+  }
+  while (!q.empty()) {
+    BinNodePosi<T> root = q.front();
+    visit(root);
+    q.pop();
+    if(root->_lc){q.push(root->_lc);}
+    if(root->_rc){q.push(root->_rc);}
+  }
+}
 // 先序遍历 PLR
 template <typename T>
 template <typename VST>
