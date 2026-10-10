@@ -46,6 +46,7 @@ protected:
     travPre_recursion(root->_lc, visit);
     travPre_recursion(root->_rc, visit);
   }
+
   // 中序遍历 l-root-r
   // 迭代
   template <typename VST>
@@ -54,13 +55,14 @@ protected:
     BinNodePosi<T> curr = root;
 
     while (!s.empty() || curr) {
-      while(curr){
+      while (curr) {
         s.push(curr);
         curr = curr->_lc;
       }
       // s.top()为当前未访问的最左侧结点
       curr = s.top();
-      s.pop(); visit(curr);
+      s.pop();
+      visit(curr);
       curr = curr->_rc;
     }
   }
@@ -73,6 +75,54 @@ protected:
     travIn_recursion(root->_lc, visit);
     visit(root);
     travIn_recursion(root->_rc, visit);
+  }
+
+  // 后序遍历 l-r-root
+  // 迭代
+  void goToMostLeftLeaf(std::stack<BinNodePosi<T>> &
+                            s) { // 迭代深入至最左侧leaf,
+                                 // root至该leaf的通路上结点依次(先右后座地)入栈
+    BinNodePosi<T> x = s.top();
+    while (x) {
+      if (x->_lc) {
+        if (x->_rc) {
+          s.push(x->_rc);
+        }
+        s.push(x->_lc);
+      } else {
+        s.push(x->_rc);
+      }
+      x = s.top();
+    }
+    s.pop();
+  }
+  template <typename VST>
+  void travPost_iterstion(BinNodePosi<T> root, VST &visit) {
+    std::stack<BinNodePosi<T>> s;
+    if (!root) {
+      return;
+    }
+    BinNodePosi<T> x = root;
+    s.push(x);
+    while (!s.empty()) {
+      if (s.top() != x->_parent) {
+        goToMostLeftLeaf(s);
+      }
+      x = s.top();
+      s.pop();
+      visit(x);
+    }
+  }
+
+  // 递归
+  template <typename VST>
+  void travPost_recursion(BinNodePosi<T> root, VST &visit) {
+    if (!root) {
+      return;
+    }
+    travPost_recursion(root->_lc, visit);
+    travPost_recursion(root->_rc, visit);
+    visit(root);
   }
 
 public:
@@ -134,6 +184,36 @@ void BinNode<T>::travPre(VST &visit) {
     break;
   case 2:
     travPre_recursion(this, visit);
+    break;
+  default:
+    return;
+  }
+}
+// 中序遍历 LPR
+template <typename T>
+template <typename VST>
+void BinNode<T>::travIn(VST &visit) {
+  switch (rand() % 2) {
+  case 0:
+    travIn_iteration(this, visit);
+    break;
+  case 1:
+    travIn_recursion(this, visit);
+    break;
+  default:
+    return;
+  }
+}
+// 后序遍历 LRP
+template <typename T>
+template <typename VST>
+void BinNode<T>::travPost(VST &visit) {
+  switch (rand() % 2) {
+  case 0:
+    travPost_iteration(this, visit);
+    break;
+  case 1:
+    travPost_recursion(this, visit);
     break;
   default:
     return;
