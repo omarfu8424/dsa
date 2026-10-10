@@ -33,8 +33,11 @@ add_library(Matrix INTERFACE)
 target_include_directories(Matrix INTERFACE Matrix)
 
 
-
-
+# 添加 Tree 库
+add_library(Tree INTERFACE)
+target_include_directories(Tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/Tree)
+add_executable(Tree_bintree Tree/BinTree.cpp)
+target_link_libraries(Tree_bintree PRIVATE Tree)
 
 
 
