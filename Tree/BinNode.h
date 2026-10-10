@@ -14,6 +14,15 @@ private:
   Rank _height{};
 
 protected:
+  Rank height() {
+    return _height;
+  }
+  BinNodePosi<T> lc(){
+    return _lc;
+  }
+  BinNodePosi<T> rc(){
+    return _rc;
+  }
   // 先序遍历 root-l-r
   // 迭代
   template <typename VST>
