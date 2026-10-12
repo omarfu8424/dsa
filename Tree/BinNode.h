@@ -3,7 +3,7 @@
 #include <stack>
 template <typename T> struct BinNode;
 template <typename T> using BinNodePosi = BinNode<T> *;
-using Rank = unsigned int;
+using Rank = int;
 
 template <typename T> struct BinNode {
 private:
@@ -14,15 +14,6 @@ private:
   Rank _height{};
 
 protected:
-  Rank height() {
-    return _height;
-  }
-  BinNodePosi<T> lc(){
-    return _lc;
-  }
-  BinNodePosi<T> rc(){
-    return _rc;
-  }
   // 先序遍历 root-l-r
   // 迭代
   template <typename VST>
@@ -144,6 +135,26 @@ public:
   BinNodePosi<T> insertLC(const T &d) { return _lc = new BinNode<T>(d, this); }
   BinNodePosi<T> insertRC(const T &d) { return _rc = new BinNode<T>(d, this); }
   // 只读
+  T data(){
+    return _data;
+  }
+  BinNodePosi<T>& parent(){
+    return _parent;
+  }
+  BinNodePosi<T>& lc(){
+    return _lc;
+  }
+  BinNodePosi<T>& rc(){
+    return _rc;
+  }
+  Rank height() {
+    return _height;
+  }
+  Rank setHeight(Rank h) {
+    _height = h;
+    return _height;
+  }
+
   [[nodiscard]] Rank size() const {
     Rank s = 1;
     if (_lc) {
