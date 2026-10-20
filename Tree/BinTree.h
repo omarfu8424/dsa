@@ -45,6 +45,34 @@ public:
     return x->rc();
   }
 
+  BinNodePosi<T> attachAsLc(BinNodePosi<T> x, BinTree<T> *&subTree) {
+    if (x->lc() != nullptr || subTree == nullptr) {
+      return nullptr;
+    }
+    x->lc() = subTree->root();
+    x->lc()->parent() = x;
+    _size += subTree->size();
+    updateHeightAbove(x);
+    subTree->_root = nullptr;
+    subTree->_size = 0;
+    delete subTree;
+    return x->lc();
+  }
+
+  BinNodePosi<T> attachAsRc(BinNodePosi<T> x, BinTree<T> *&subTree) {
+    if (x->rc() != nullptr || subTree == nullptr) {
+      return nullptr;
+    }
+    x->rc() = subTree->root();
+    x->rc()->parent() = x;
+    _size += subTree->size();
+    updateHeightAbove(x);
+    subTree->_root = nullptr;
+    subTree->_size = 0;
+    delete subTree;
+    return x->rc();
+  }
+
   Rank remove(BinNodePosi<T> subRoot) {
     if (subRoot == nullptr) {
       return 0;
@@ -72,4 +100,5 @@ public:
 
   Rank size() { return _size; }
   bool empty() { return _root == nullptr; }
+  BinNodePosi<T> &root() { return _root; }
 };
