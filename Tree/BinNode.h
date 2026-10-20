@@ -34,8 +34,8 @@ protected:
       }
     }
   }
-  template <typename VST>
-  void travPre_iteration_2(BinNodePosi<T> root, VST &visit);
+  // template <typename VST>
+  // void travPre_iteration_2(BinNodePosi<T> root, VST &visit);
   // 递归
   template <typename VST>
   void travPre_recursion(BinNodePosi<T> root, VST &visit) {
@@ -97,7 +97,7 @@ protected:
     s.pop();
   }
   template <typename VST>
-  void travPost_iterstion(BinNodePosi<T> root, VST &visit) {
+  void travPost_iteration(BinNodePosi<T> root, VST &visit) {
     std::stack<BinNodePosi<T>> s;
     if (!root) {
       return;
@@ -195,14 +195,11 @@ void BinNode<T>::travLevel(VST &visit) {
 template <typename T>
 template <typename VST>
 void BinNode<T>::travPre(VST &visit) {
-  switch (rand() % 3) {
+  switch (rand() % 2) {
   case 0:
     travPre_iteration_1(this, visit);
     break;
   case 1:
-    travPre_iteration_2(this, visit);
-    break;
-  case 2:
     travPre_recursion(this, visit);
     break;
   default:
