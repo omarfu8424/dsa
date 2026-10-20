@@ -1,0 +1,93 @@
+Founded in 1998, Google LLC (formerly Google Inc.) has become one of the world’s most recognized 
+technology companies. Its core service, the Google search engine, is used by millions of people to 
+find documents on the World Wide Web. In addition, Google provides electronic mail service (called 
+Gmail), an Internet-based video-sharing service (called YouTube), and a host of other Internet ser-
+vices (including Google Maps, Google Calendar, Google Earth, Google Books, and Google Translate).
+However, in addition to being a prime example of the entrepreneurial spirit, Google also provides 
+examples of how expanding technology is challenging society. For example, Google’s search engine 
+has led to questions regarding the extent to which an international company should comply with 
+the wishes of individual governments; YouTube has raised questions regarding the extent to which 
+a company should be liable for information that others distribute through its services as well as the 
+degree to which the company can claim ownership of that information; Google Books has generated 
+concerns regarding the scope and limitations of intellectual property rights; and Google Maps has 
+been accused of violating privacy rights. It is by applying abstraction that we are able to construct, analyze, and 
+manage large, complex computer systems, which would be overwhelming if 
+viewed in their entirety at a detailed level. At each level of abstraction, we 
+view the system in terms of components, called abstract tools, whose internal 
+composition we ignore. This allows us to concentrate on how each component 
+interacts with other components at the same level and how the collection as 
+a whole forms a higher-level component. Thus, we are able to comprehend 
+the part of the system that is relevant to the task at hand rather than being 
+lost in a sea of details.
+We emphasize that abstraction is not limited to science and technology. 
+It is an important simplification technique with which our society has cre-
+ated a lifestyle that would otherwise be impossible. Few of us understand 
+how the various conveniences of daily life are actually implemented. We eat 
+food and wear clothes that we cannot produce by ourselves. We use electrical 
+devices and communication systems without understanding the underlying 
+technology. We use the services of others without knowing the details of their 
+professions. With each new advancement, a small part of society chooses to 
+specialize in its implementation, while the rest of us learn to use the results as 
+abstract tools. In this manner, society’s  warehouse of abstract tools expands, 
+and society’s ability to progress increases.
+Abstraction is a recurring pillar of our study. We will learn that computing 
+equipment is constructed in levels of abstract tools. We will also see that the 
+development of large software systems is accomplished in a modular fashion 
+in which each module is used as an abstract tool in larger modules. Moreover, 
+abstraction plays an important role in the task of advancing computer science 
+itself, allowing researchers to focus attention on particular areas within a com-
+plex field. In fact, the organization of this text reflects this characteristic of the 
+science. Each chapter, which focuses on a particular area within the science, is 
+often surprisingly independent of the others, yet together the chapters form 
+a comprehensive overview of a vast field of study. Computer science not only has profound impacts on the technologies we use 
+to communicate, work, and play; it also has enormous social repercussions. 
+Progress in computer science is blurring many distinctions on which our soci-
+ety has based decisions in the past and is challenging many of society’s long-
+held principles. In law, it generates questions regarding the degree to which 
+intellectual property can be owned and the rights and liabilities that accom-
+pany that ownership. In ethics, it generates numerous options that challenge 
+the traditional principles on which social behavior is based. In government, 
+it generates debates regarding the extent to which computer technology and 
+its applications should be regulated. In philosophy, it generates contention 
+between the presence of intelligent behavior and the presence of intelligence 
+itself. And, throughout society, it generates disputes concerning whether new 
+applications represent new freedoms or new controls.
+Such topics are important for those contemplating careers in computing 
+or computer-related fields. Revelations within science have sometimes found 
+controversial applications, causing serious discontent for the researchers 
+involved. Moreover, an otherwise successful career can quickly be derailed 
+by an ethical misstep.
+The ability to deal with the dilemmas posed by advancing computer 
+ technology is also important for those outside its immediate realm. Indeed, 
+technology is infiltrating society so rapidly that few, if any, are independent 
+of its effects. Our purpose in introducing the flip-flop circuit in Figures 1.3 and 1.4 is 
+threefold. First, it demonstrates how devices can be constructed from gates, 
+a process known as digital circuit design, which is an important topic in com-
+puter engineering. Indeed, the flip-flop is only one of many circuits that are 
+basic tools in computer engineering.
+Second, the concept of a flip-flop provides an example of abstraction and 
+the use of abstract tools. Actually, there are other ways to build a flip-flop. 
+One alternative is shown in Figure 1.5. If you experiment with this circuit, 
+you will find that, although it has a different internal structure, its external 
+properties are the same as those of Figure 1.3. A computer engineer does not 
+need to know which circuit is actually used within a flip-flop. Instead, only 
+an understanding of the flip-flop’s external properties is needed to use it 
+as an abstract tool. A flip-flop, along with other well-defined circuits, forms 
+a set of component building blocks from which an engineer can construct 
+more complex circuitry. In turn, the design of computer circuitry takes on a 
+hierarchical structure, each level of which uses the lower level components 
+as abstract tools.
+The third purpose for introducing the flip-flop is that it is one means of 
+storing a bit within a modern computer. More precisely, a flip-flop can be set 
+to have the output value of either 0 or 1. Other circuits can adjust this value 
+by sending pulses to the flip-flop’s inputs, and still other circuits can respond 
+to the stored value by using the flip-flop’s output as their inputs. Thus, many 
+flip-flops, constructed as very small electrical circuits, can be used inside a 
+computer as a means of recording information that is encoded as patterns of 
+0s and 1s. Indeed, technology known as very large-scale integration (VLSI), 
+which allows millions of electrical components to be constructed on a semi-
+conductor wafer (called a chip), is used to create miniature devices containing 
+millions of flip-flops along with their controlling circuitry. Consequently, these 
+chips are used as abstract tools in the construction of higher level components 
+in computer systems. In fact, in some cases, VLSI is used to create an entire 
+computer system on a single chip.
