@@ -38,7 +38,8 @@ add_library(Tree INTERFACE)
 target_include_directories(Tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/Tree)
 add_executable(Tree_bintree Tree/BinTree.cpp)
 target_link_libraries(Tree_bintree PRIVATE Tree)
-
+add_executable(tree_Huffman Tree/Huffman.cpp)
+target_link_libraries(Tree_bintree PRIVATE Tree)
 
 
 
