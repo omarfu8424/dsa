@@ -1,74 +1,55 @@
 cmake_minimum_required(VERSION 3.16)
 project(MyDSAProject)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# 设置 C++ 标准
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# set(CMAKE_CXX_COMPILE_FEATURES "/usr/bin/g++")
-# set(CMAKE_C_COMPILE_FEATURES "/usr/bin/gcc")
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+enable_testing()
 
-# 添加 String 静态库
-add_library(String STATIC String/String_implementation.cpp)
-target_include_directories(String PUBLIC String)
-# 可执行文件：String/main（链接 String 库）
-add_executable(string_main String/main.cpp)
+set(PROJECT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# Header-only modules expose their public headers through the include tree.
+add_library(List INTERFACE)
+target_include_directories(List INTERFACE ${PROJECT_INCLUDE_DIR}/List)
+add_executable(List_main src/List/main.cpp)
+target_link_libraries(List_main PRIVATE List)
+add_executable(List_polynominal src/List/polynominal.cpp)
+target_link_libraries(List_polynominal PRIVATE List)
+
+add_library(Matrix INTERFACE)
+target_include_directories(Matrix INTERFACE ${PROJECT_INCLUDE_DIR}/Matrix)
+
+add_library(Tree INTERFACE)
+target_include_directories(Tree INTERFACE ${PROJECT_INCLUDE_DIR}/Tree)
+add_executable(Tree_bintree src/Tree/BinTree.cpp)
+target_link_libraries(Tree_bintree PRIVATE Tree)
+add_executable(tree_Huffman src/Tree/Huffman.cpp)
+target_link_libraries(tree_Huffman PRIVATE Tree)
+
+add_executable(BinTree_tests tests/BinTree_tests.cpp)
+target_link_libraries(BinTree_tests PRIVATE Tree)
+add_test(NAME BinTree_tests COMMAND BinTree_tests)
+
+add_library(String STATIC src/String/String_implementation.cpp)
+target_include_directories(String PUBLIC ${PROJECT_INCLUDE_DIR}/String)
+add_executable(string_main src/String/main.cpp)
 target_link_libraries(string_main PRIVATE String)
 
+add_executable(hello src/hello.cpp)
+add_executable(sum_basic src/sum/basic.cpp)
+add_executable(sort_basic src/sort/basic.cpp)
+add_executable(stack_RPN src/Stack/RPN.cpp)
+add_executable(stack_expression src/Stack/expression.cpp)
+add_executable(stack_convert src/Stack/convert.cpp)
+add_executable(stack_matchBraces src/Stack/matchBraces.cpp)
+add_executable(stack_queen src/Stack/queen.cpp)
 
+add_executable(fib_main src/Fib/main.cpp)
+target_include_directories(fib_main PRIVATE ${PROJECT_INCLUDE_DIR}/Fib)
+add_executable(fib_basic src/Fib/basic.cpp)
+target_include_directories(fib_basic PRIVATE ${PROJECT_INCLUDE_DIR}/Fib)
 
-# 添加 List 库
-add_library(List INTERFACE)
-target_include_directories(List INTERFACE List)
-# 可执行文件：List/main（链接 List 库）
-add_executable(List_main List/main.cpp)
-target_link_libraries(List_main PRIVATE List)
-# 可执行文件：List/polynominal
-add_executable(List_polynominal List/polynominal.cpp)
-
-
-# 添加 Matrix 库
-add_library(Matrix INTERFACE)
-target_include_directories(Matrix INTERFACE Matrix)
-
-
-# 添加 Tree 库
-add_library(Tree INTERFACE)
-target_include_directories(Tree INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/Tree)
-add_executable(Tree_bintree Tree/BinTree.cpp)
-target_link_libraries(Tree_bintree PRIVATE Tree)
-add_executable(tree_Huffman Tree/Huffman.cpp)
-target_link_libraries(Tree_bintree PRIVATE Tree)
-
-
-
-# 可执行文件：hello
-add_executable(hello hello.cpp)
-
-# 可执行文件：sum/basic
-add_executable(sum_basic sum/basic.cpp)
-
-# 可执行文件：sort/basic
-add_executable(sort_basic sort/basic.cpp)
-
-# 可执行文件：Stack
-add_executable(stack_RPN Stack/RPN.cpp)
-add_executable(stack_expression Stack/expression.cpp)
-add_executable(stack_convert Stack/convert.cpp)
-add_executable(stack_matchBraces Stack/matchBraces.cpp)
-add_executable(stack_queen Stack/queen.cpp)
-
-# 可执行文件：Fib/main
-add_executable(fib_main Fib/main.cpp)
-target_include_directories(fib_main PRIVATE Fib)
-
-# 可执行文件：Fib/basic
-add_executable(fib_basic Fib/basic.cpp)
-target_include_directories(fib_basic PRIVATE Fib)
-
-
-
-# 可执行文件：search/basic（包含 Fib 头文件）
-add_executable(search_basic search/basic.cpp)
-target_include_directories(search_basic PRIVATE Fib)
+add_executable(search_basic src/search/basic.cpp)
+target_include_directories(search_basic PRIVATE ${PROJECT_INCLUDE_DIR}/Fib)

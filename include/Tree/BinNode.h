@@ -1,9 +1,12 @@
+#pragma once
 #include <cstdlib>
 #include <queue>
 #include <stack>
 template <typename T> struct BinNode;
 template <typename T> using BinNodePosi = BinNode<T> *;
 using Rank = int;
+// 遍历实现方式（可选参数用）
+enum class TravImpl { Iteration, Recursion };
 
 template <typename T> struct BinNode {
 private:
@@ -81,7 +84,7 @@ protected:
   // 迭代
   void goToMostLeftLeaf(std::stack<BinNodePosi<T>> &
                             s) { // 迭代深入至最左侧leaf,
-                                 // root至该leaf的通路上结点依次(先右后座地)入栈
+                                 // root至该leaf的通路上结点依次(先右后左地)入栈
     BinNodePosi<T> x = s.top();
     while (x) {
       if (x->_lc) {
@@ -134,22 +137,16 @@ public:
   // 插入孩子
   BinNodePosi<T> insertLC(const T &d) { return _lc = new BinNode<T>(d, this); }
   BinNodePosi<T> insertRC(const T &d) { return _rc = new BinNode<T>(d, this); }
-  // 只读
-  T data(){
-    return _data;
-  }
-  BinNodePosi<T>& parent(){
-    return _parent;
-  }
-  BinNodePosi<T>& lc(){
-    return _lc;
-  }
-  BinNodePosi<T>& rc(){
-    return _rc;
-  }
-  Rank height() {
-    return _height;
-  }
+  // 只读访问器（常量引用/值，禁止外部直接改写指针）
+  const T& data() const { return _data; }
+  BinNodePosi<T> parent() const { return _parent; }
+  BinNodePosi<T> lc() const { return _lc; }
+  BinNodePosi<T> rc() const { return _rc; }
+  Rank height() const { return _height; }
+  // 写访问器（显式接口修改，便于维护结构一致性）
+  BinNodePosi<T> setParent(BinNodePosi<T> p) { return _parent = p; }
+  BinNodePosi<T> setLC(BinNodePosi<T> l) { return _lc = l; }
+  BinNodePosi<T> setRC(BinNodePosi<T> r) { return _rc = r; }
   Rank setHeight(Rank h) {
     _height = h;
     return _height;
@@ -167,9 +164,12 @@ public:
   }
   // 遍历
   template <typename VST> void travLevel(VST &visit); // 层次遍历
-  template <typename VST> void travPre(VST &visit);   // 先序遍历
-  template <typename VST> void travIn(VST &visit);    // 中序遍历
-  template <typename VST> void travPost(VST &visit);  // 后序遍历
+  template <typename VST>
+  void travPre(VST &visit, TravImpl impl = TravImpl::Iteration); // 先序遍历
+  template <typename VST>
+  void travIn(VST &visit, TravImpl impl = TravImpl::Iteration);  // 中序遍历
+  template <typename VST>
+  void travPost(VST &visit, TravImpl impl = TravImpl::Iteration); // 后序遍历
 };
 // 层次遍历 BFS
 template <typename T>
@@ -194,45 +194,39 @@ void BinNode<T>::travLevel(VST &visit) {
 // 先序遍历 PLR
 template <typename T>
 template <typename VST>
-void BinNode<T>::travPre(VST &visit) {
-  switch (rand() % 2) {
-  case 0:
+void BinNode<T>::travPre(VST &visit, TravImpl impl) {
+  switch (impl) {
+  case TravImpl::Iteration:
     travPre_iteration_1(this, visit);
     break;
-  case 1:
+  case TravImpl::Recursion:
     travPre_recursion(this, visit);
     break;
-  default:
-    return;
   }
 }
 // 中序遍历 LPR
 template <typename T>
 template <typename VST>
-void BinNode<T>::travIn(VST &visit) {
-  switch (rand() % 2) {
-  case 0:
+void BinNode<T>::travIn(VST &visit, TravImpl impl) {
+  switch (impl) {
+  case TravImpl::Iteration:
     travIn_iteration(this, visit);
     break;
-  case 1:
+  case TravImpl::Recursion:
     travIn_recursion(this, visit);
     break;
-  default:
-    return;
   }
 }
 // 后序遍历 LRP
 template <typename T>
 template <typename VST>
-void BinNode<T>::travPost(VST &visit) {
-  switch (rand() % 2) {
-  case 0:
+void BinNode<T>::travPost(VST &visit, TravImpl impl) {
+  switch (impl) {
+  case TravImpl::Iteration:
     travPost_iteration(this, visit);
     break;
-  case 1:
+  case TravImpl::Recursion:
     travPost_recursion(this, visit);
     break;
-  default:
-    return;
   }
 }

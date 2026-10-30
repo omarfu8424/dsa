@@ -1,14 +1,13 @@
 #include "BinNode.h"
 #include <algorithm>
 
-#define stature(p) ((p) ? (p)->height() : -1)
-
 template <typename T> class BinTree {
 private:
   Rank _size{};
-  BinNodePosi<T> _root;
+  BinNodePosi<T> _root{};
 
 protected:
+  Rank stature(BinNodePosi<T> p) { return p ? p->height() : -1; }
   virtual Rank updateHeight(BinNodePosi<T> x) {
     return x->setHeight(1 + std::max(stature(x->lc()), stature(x->rc())));
   }
@@ -35,41 +34,47 @@ public:
     return _root = new BinNode<T>(d);
   }
   BinNodePosi<T> insertAsLC(BinNodePosi<T> x, const T &d) {
-    updateHeightAbove(x->insertLC(d));
+    BinNodePosi<T> child = x->insertLC(d);
+    updateHeightAbove(x);
     _size++;
-    return x->lc();
+    return child;
   }
   BinNodePosi<T> insertAsRC(BinNodePosi<T> x, const T &d) {
-    updateHeightAbove(x->insertRC(d));
+    BinNodePosi<T> child = x->insertRC(d);
+    updateHeightAbove(x);
     _size++;
-    return x->rc();
+    return child;
   }
 
   BinNodePosi<T> attachAsLc(BinNodePosi<T> x, BinTree<T> *&subTree) {
-    if (x->lc() != nullptr || subTree == nullptr) {
+    if (x == nullptr || x->lc() != nullptr || subTree == nullptr ||
+        subTree->root() == nullptr) {
       return nullptr;
     }
-    x->lc() = subTree->root();
-    x->lc()->parent() = x;
+    x->setLC(subTree->root());
+    x->lc()->setParent(x);
     _size += subTree->size();
     updateHeightAbove(x);
     subTree->_root = nullptr;
     subTree->_size = 0;
     delete subTree;
+    subTree = nullptr;
     return x->lc();
   }
 
   BinNodePosi<T> attachAsRc(BinNodePosi<T> x, BinTree<T> *&subTree) {
-    if (x->rc() != nullptr || subTree == nullptr) {
+    if (x == nullptr || x->rc() != nullptr || subTree == nullptr ||
+        subTree->root() == nullptr) {
       return nullptr;
     }
-    x->rc() = subTree->root();
-    x->rc()->parent() = x;
+    x->setRC(subTree->root());
+    x->rc()->setParent(x);
     _size += subTree->size();
     updateHeightAbove(x);
     subTree->_root = nullptr;
     subTree->_size = 0;
     delete subTree;
+    subTree = nullptr;
     return x->rc();
   }
 
@@ -80,9 +85,11 @@ public:
     if (subRoot == _root) {
       _root = nullptr;
     } else if (subRoot->parent()->lc() == subRoot) {
-      subRoot->parent()->lc() = nullptr;
+      subRoot->parent()->setLC(nullptr);
     } else if (subRoot->parent()->rc() == subRoot) {
-      subRoot->parent()->rc() = nullptr;
+      subRoot->parent()->setRC(nullptr);
+    } else {
+      return 0;
     }
     updateHeightAbove(subRoot->parent());
     Rank n = removeAt(subRoot);
