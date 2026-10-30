@@ -12,5 +12,5 @@ template <typename K, typename V> struct Entry {
 template <typename T> class BST : public BinTree<T> {
 public:
   virtual BinNodePosi<T>& search(const T &e);
-  virtual BinNodePosi<T> insert
+  virtual BinNodePosi<T> insert(const T &e);
 };

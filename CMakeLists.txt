@@ -27,6 +27,8 @@ add_executable(Tree_bintree src/Tree/BinTree.cpp)
 target_link_libraries(Tree_bintree PRIVATE Tree)
 add_executable(tree_Huffman src/Tree/Huffman.cpp)
 target_link_libraries(tree_Huffman PRIVATE Tree)
+target_compile_definitions(tree_Huffman PRIVATE
+  DSA_INPUT_FILE="${CMAKE_CURRENT_SOURCE_DIR}/resources/input.txt")
 
 add_executable(BinTree_tests tests/BinTree_tests.cpp)
 target_link_libraries(BinTree_tests PRIVATE Tree)

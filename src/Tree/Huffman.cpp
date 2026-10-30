@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace Huffman;
 int main() {
-  int *input = stastic("../Tree/input.txt");
+  int *input = stastic(DSA_INPUT_FILE);
   if (input == nullptr) {
     std::cerr << "failed to open the file\n";
     return 1;
