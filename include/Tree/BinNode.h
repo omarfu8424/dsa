@@ -1,12 +1,16 @@
 #pragma once
-#include <cstdlib>
+#include <iostream>
 #include <queue>
 #include <stack>
 template <typename T> struct BinNode;
 template <typename T> using BinNodePosi = BinNode<T> *;
 using Rank = int;
-// 遍历实现方式（可选参数用）
+// 遍历实现方式
 enum class TravImpl { Iteration, Recursion };
+
+namespace binNode {
+inline constexpr auto PRINT_NODE = [](auto node) { std::cout << node->data() << ' '; };
+} // namespace binNode
 
 template <typename T> struct BinNode {
 private:
@@ -134,23 +138,33 @@ public:
   BinNode(T d, BinNodePosi<T> p = nullptr, BinNodePosi<T> l = nullptr,
           BinNodePosi<T> r = nullptr, Rank h = 0)
       : _data(d), _parent(p), _lc(l), _rc(r), _height(h) {};
-  // 插入孩子
-  BinNodePosi<T> insertLC(const T &d) { return _lc = new BinNode<T>(d, this); }
-  BinNodePosi<T> insertRC(const T &d) { return _rc = new BinNode<T>(d, this); }
-  // 只读访问器（常量引用/值，禁止外部直接改写指针）
-  const T& data() const { return _data; }
+
+  // 状态判断
+  [[nodiscard]] bool isRoot() const { return _parent == nullptr; }
+  [[nodiscard]] bool isLChild() const {
+    return _parent && this == _parent->_lc;
+  }
+  [[nodiscard]] bool isRChild() const {
+    return _parent && this == _parent->_rc;
+  }
+  [[nodiscard]] bool hasParent() const { return _parent != nullptr; }
+  [[nodiscard]] bool hasLChild() const { return _lc != nullptr; }
+  [[nodiscard]] bool hasRChild() const { return _rc != nullptr; }
+  [[nodiscard]] bool hasChild() const { return hasLChild() || hasRChild(); }
+  [[nodiscard]] bool hasBothChild() const { return hasLChild() && hasRChild(); }
+  [[nodiscard]] bool isLeaf() const { return !hasChild(); }
+
+  // 只读访问器
+  const T &data() const { return _data; }
   BinNodePosi<T> parent() const { return _parent; }
   BinNodePosi<T> lc() const { return _lc; }
   BinNodePosi<T> rc() const { return _rc; }
   Rank height() const { return _height; }
-  // 写访问器（显式接口修改，便于维护结构一致性）
+  // 写访问器
   BinNodePosi<T> setParent(BinNodePosi<T> p) { return _parent = p; }
   BinNodePosi<T> setLC(BinNodePosi<T> l) { return _lc = l; }
   BinNodePosi<T> setRC(BinNodePosi<T> r) { return _rc = r; }
-  Rank setHeight(Rank h) {
-    _height = h;
-    return _height;
-  }
+  Rank setHeight(Rank h) { return _height = h; }
 
   [[nodiscard]] Rank size() const {
     Rank s = 1;
@@ -162,12 +176,27 @@ public:
     }
     return s;
   }
+  // 插入孩子
+  // assert: 该结点没有对应的孩子
+  BinNodePosi<T> insertLC(const T &d) {
+    if (hasLChild()) {
+      return nullptr;
+    }
+    return _lc = new BinNode<T>(d, this);
+  }
+  BinNodePosi<T> insertRC(const T &d) {
+    if (hasRChild()) {
+      return nullptr;
+    }
+    return _rc = new BinNode<T>(d, this);
+  }
+
   // 遍历
   template <typename VST> void travLevel(VST &visit); // 层次遍历
   template <typename VST>
   void travPre(VST &visit, TravImpl impl = TravImpl::Iteration); // 先序遍历
   template <typename VST>
-  void travIn(VST &visit, TravImpl impl = TravImpl::Iteration);  // 中序遍历
+  void travIn(VST &visit, TravImpl impl = TravImpl::Iteration); // 中序遍历
   template <typename VST>
   void travPost(VST &visit, TravImpl impl = TravImpl::Iteration); // 后序遍历
 };

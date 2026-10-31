@@ -26,7 +26,7 @@ std::vector<int> collect(Traversal traversal) {
 
 void testEmptyTree() {
   BinTree<int> tree;
-  check(tree.empty(), "a new tree must be empty");
+  check(tree.isEmpty(), "a new tree must be empty");
   check(tree.size() == 0, "a new tree must have size zero");
   check(tree.root() == nullptr, "a new tree must have a null root");
   check(tree.remove(nullptr) == 0, "removing null must remove nothing");
@@ -41,7 +41,7 @@ void testInsertionLinksAndHeights() {
   auto leftRight = tree.insertAsRC(left, 3);
   auto rightRight = tree.insertAsRC(right, 7);
 
-  check(!tree.empty(), "inserted tree must not be empty");
+  check(!tree.isEmpty(), "inserted tree must not be empty");
   check(tree.size() == 6, "size must count every inserted node");
   check(root == tree.root(), "insertAsRoot must return the tree root");
   check(root->parent() == nullptr, "root must not have a parent");
@@ -120,7 +120,7 @@ void testAttachAndRejectInvalidAttach() {
   leftSubtree->insertAsLC(leftRoot, 1);
   leftSubtree->insertAsRC(leftRoot, 3);
   BinTree<int> *leftSubtreePointer = leftSubtree;
-  check(tree.attachAsLc(child, leftSubtreePointer) == leftRoot,
+  check(tree.attachAsLSubTree(child, leftSubtreePointer) == leftRoot,
         "left subtree must be attached");
   check(leftSubtreePointer == nullptr,
         "attached subtree pointer must be consumed");
@@ -130,7 +130,7 @@ void testAttachAndRejectInvalidAttach() {
 
   BinTree<int> emptySubtree;
   BinTree<int> *emptyPointer = &emptySubtree;
-  check(tree.attachAsRc(child, emptyPointer) == nullptr,
+  check(tree.attachAsRSubTree(child, emptyPointer) == nullptr,
         "an empty subtree must not be attached");
   check(emptyPointer == &emptySubtree,
         "rejected subtree ownership must remain with the caller");
@@ -138,7 +138,7 @@ void testAttachAndRejectInvalidAttach() {
   BinTree<int> occupiedSubtree;
   occupiedSubtree.insertAsRoot(99);
   BinTree<int> *occupiedPointer = &occupiedSubtree;
-  check(tree.attachAsLc(child, occupiedPointer) == nullptr,
+  check(tree.attachAsLSubTree(child, occupiedPointer) == nullptr,
         "an occupied child position must reject attachment");
   check(occupiedPointer == &occupiedSubtree,
         "rejected occupied attachment must preserve ownership");
@@ -164,7 +164,7 @@ void testRemove() {
 
   check(tree.remove(nullptr) == 0, "removing null after mutation must be safe");
   check(tree.remove(root) == 3, "removing the root must remove all nodes");
-  check(tree.empty() && tree.size() == 0 && tree.root() == nullptr,
+  check(tree.isEmpty() && tree.size() == 0 && tree.root() == nullptr,
         "removing the root must empty the tree");
 }
 

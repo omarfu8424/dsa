@@ -1,3 +1,4 @@
+#pragma once
 #include "BinNode.h"
 #include <algorithm>
 
@@ -28,27 +29,68 @@ public:
       remove(_root);
     }
   }
+  // 深拷贝
+  BinTree(const BinTree<T> &other) = delete;
+  BinTree<T> &operator=(const BinTree<T> &other) = delete;
 
+  // 状态判断
+  [[nodiscard]] bool isEmpty() const { return _root == nullptr; }
+  bool belongs(BinNodePosi<T> x) const {
+    if (x == nullptr) {
+      return false;
+    }
+    BinNodePosi<T> p = x;
+    while (p->hasParent()) {
+      p = p->parent();
+    }
+    return p == _root;
+  }
+  // 只读访问器
+  [[nodiscard]] Rank size() const { return _size; }
+  [[nodiscard]] const BinNodePosi<T> &root() const { return _root; }
+
+  // 初始化
   BinNodePosi<T> insertAsRoot(const T &d) {
+    if (!isEmpty()) {
+      return nullptr;
+    }
     _size = 1;
     return _root = new BinNode<T>(d);
   }
+
+  // 插入孩子结点
+  // assert: 该结点没有对应的孩子, 且该结点属于该树
   BinNodePosi<T> insertAsLC(BinNodePosi<T> x, const T &d) {
+    if (x == nullptr || x->hasLChild() || !belongs(x)) {
+      return nullptr;
+    }
     BinNodePosi<T> child = x->insertLC(d);
+    if (child == nullptr) {
+      return nullptr;
+    }
     updateHeightAbove(x);
     _size++;
     return child;
   }
   BinNodePosi<T> insertAsRC(BinNodePosi<T> x, const T &d) {
+    if (x == nullptr || x->hasRChild() || !belongs(x)) {
+      return nullptr;
+    }
     BinNodePosi<T> child = x->insertRC(d);
+    if (child == nullptr) {
+      return nullptr;
+    }
     updateHeightAbove(x);
     _size++;
     return child;
   }
 
-  BinNodePosi<T> attachAsLc(BinNodePosi<T> x, BinTree<T> *&subTree) {
-    if (x == nullptr || x->lc() != nullptr || subTree == nullptr ||
-        subTree->root() == nullptr) {
+
+  // 挂载子树
+  // assert: 该结点没有对应的孩子, 且该结点属于该树, 且子树不为空, 且子树不属于该树
+  BinNodePosi<T> attachAsLSubTree(BinNodePosi<T> x, BinTree<T> *&subTree) {
+    if (x == nullptr || !belongs(x) || x->hasLChild() || subTree == nullptr ||
+        subTree->isEmpty() || belongs(subTree->root()) ) {
       return nullptr;
     }
     x->setLC(subTree->root());
@@ -62,9 +104,9 @@ public:
     return x->lc();
   }
 
-  BinNodePosi<T> attachAsRc(BinNodePosi<T> x, BinTree<T> *&subTree) {
-    if (x == nullptr || x->rc() != nullptr || subTree == nullptr ||
-        subTree->root() == nullptr) {
+  BinNodePosi<T> attachAsRSubTree(BinNodePosi<T> x, BinTree<T> *&subTree) {
+    if (x == nullptr || !belongs(x) || x->hasRChild() || subTree == nullptr ||
+        subTree->isEmpty() || belongs(subTree->_root)) {
       return nullptr;
     }
     x->setRC(subTree->root());
@@ -84,6 +126,8 @@ public:
     }
     if (subRoot == _root) {
       _root = nullptr;
+    } else if (subRoot->isRoot()) {
+      return 0;
     } else if (subRoot->parent()->lc() == subRoot) {
       subRoot->parent()->setLC(nullptr);
     } else if (subRoot->parent()->rc() == subRoot) {
@@ -104,8 +148,4 @@ public:
     delete p;
     return n;
   }
-
-  Rank size() { return _size; }
-  bool empty() { return _root == nullptr; }
-  BinNodePosi<T> &root() { return _root; }
 };
