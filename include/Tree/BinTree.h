@@ -8,6 +8,7 @@ private:
   BinNodePosi<T> _root{};
 
 protected:
+  BinNodePosi<T> &rootRef(){return _root;}
   Rank stature(BinNodePosi<T> p) { return p ? p->height() : -1; }
   virtual Rank updateHeight(BinNodePosi<T> x) {
     return x->setHeight(1 + std::max(stature(x->lc()), stature(x->rc())));
