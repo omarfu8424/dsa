@@ -8,10 +8,12 @@ private:
   BinNodePosi<T> _root{};
 
 protected:
-  BinNodePosi<T> &rootRef(){return _root;}
+  BinNodePosi<T> &rootRef() { return _root; }
+  void increaseSize() { ++_size; }
+  void decreaseSize(Rank n = 1) { _size -= n; }
   Rank stature(BinNodePosi<T> p) { return p ? p->height() : -1; }
   virtual Rank updateHeight(BinNodePosi<T> x) {
-    return x->setHeight(1 + std::max(stature(x->lc()), stature(x->rc())));
+    return x->heightRef() = 1 + std::max(stature(x->lc()), stature(x->rc()));
   }
   virtual void updateHeightAbove(BinNodePosi<T> x) {
     while (x) {
@@ -86,16 +88,16 @@ public:
     return child;
   }
 
-
   // 挂载子树
-  // assert: 该结点没有对应的孩子, 且该结点属于该树, 且子树不为空, 且子树不属于该树
+  // assert: 该结点没有对应的孩子, 且该结点属于该树, 且子树不为空,
+  // 且子树不属于该树
   BinNodePosi<T> attachAsLSubTree(BinNodePosi<T> x, BinTree<T> *&subTree) {
     if (x == nullptr || !belongs(x) || x->hasLChild() || subTree == nullptr ||
-        subTree->isEmpty() || belongs(subTree->root()) ) {
+        subTree->isEmpty() || belongs(subTree->root())) {
       return nullptr;
     }
-    x->setLC(subTree->root());
-    x->lc()->setParent(x);
+    x->lcRef() = subTree->root();
+    x->lc()->parentRef() = x;
     _size += subTree->size();
     updateHeightAbove(x);
     subTree->_root = nullptr;
@@ -110,8 +112,8 @@ public:
         subTree->isEmpty() || belongs(subTree->_root)) {
       return nullptr;
     }
-    x->setRC(subTree->root());
-    x->rc()->setParent(x);
+    x->rcRef() = subTree->root();
+    x->rc()->parentRef() = x;
     _size += subTree->size();
     updateHeightAbove(x);
     subTree->_root = nullptr;
@@ -130,9 +132,9 @@ public:
     } else if (subRoot->isRoot()) {
       return 0;
     } else if (subRoot->parent()->lc() == subRoot) {
-      subRoot->parent()->setLC(nullptr);
+      subRoot->parent()->lcRef() = nullptr;
     } else if (subRoot->parent()->rc() == subRoot) {
-      subRoot->parent()->setRC(nullptr);
+      subRoot->parent()->rcRef() = nullptr;
     } else {
       return 0;
     }

@@ -9,7 +9,9 @@ using Rank = int;
 enum class TravImpl { Iteration, Recursion };
 
 namespace binNode {
-inline constexpr auto PRINT_NODE = [](auto node) { std::cout << node->data() << ' '; };
+inline constexpr auto PRINT_NODE = [](auto node) {
+  std::cout << node->data() << ' ';
+};
 } // namespace binNode
 
 template <typename T> struct BinNode {
@@ -160,11 +162,28 @@ public:
   BinNodePosi<T> lc() const { return _lc; }
   BinNodePosi<T> rc() const { return _rc; }
   Rank height() const { return _height; }
+  BinNodePosi<T> succ() {
+    BinNodePosi<T> s = this;
+    if (s->hasRChild()) {
+      s = s->rc();
+      while (s->hasLChild()) {
+        s = s->lc();
+      }
+    } else {
+      while (s->isRChild()) {
+        s = s->parent();
+      }
+      s = s->parent();
+    }
+    return s;
+  }
+
   // 写访问器
-  BinNodePosi<T> setParent(BinNodePosi<T> p) { return _parent = p; }
-  BinNodePosi<T> setLC(BinNodePosi<T> l) { return _lc = l; }
-  BinNodePosi<T> setRC(BinNodePosi<T> r) { return _rc = r; }
-  Rank setHeight(Rank h) { return _height = h; }
+  T &dataRef() { return _data; }
+  BinNodePosi<T> &parentRef() { return _parent; }
+  BinNodePosi<T> &lcRef() { return _lc; }
+  BinNodePosi<T> &rcRef() { return _rc; }
+  Rank &heightRef() { return _height; }
 
   [[nodiscard]] Rank size() const {
     Rank s = 1;

@@ -52,7 +52,7 @@ void testInsertionLinksAndHeights() {
   check(leftLeft->parent() == left && leftRight->parent() == left &&
             rightRight->parent() == right,
         "grandchild parent links must be maintained");
-  check(root->size() == 6, "node size must count the complete subtree");
+  check(tree.size() == 6, "node size must count the complete subtree");
   check(left->height() == 1 && right->height() == 1,
         "leaf-parent heights must be updated");
   check(root->height() == 2, "root height must be updated");
