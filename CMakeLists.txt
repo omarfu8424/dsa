@@ -38,6 +38,10 @@ add_executable(BST_tests tests/BST_tests.cpp)
 target_link_libraries(BST_tests PRIVATE Tree)
 add_test(NAME BST_tests COMMAND BST_tests)
 
+add_executable(BST_height_experiment tests/BST_height_experiment.cpp)
+target_link_libraries(BST_height_experiment PRIVATE Tree)
+add_test(NAME BST_height_experiment COMMAND BST_height_experiment)
+
 add_library(String STATIC src/String/String_implementation.cpp)
 target_include_directories(String PUBLIC ${PROJECT_INCLUDE_DIR}/String)
 add_executable(string_main src/String/main.cpp)
