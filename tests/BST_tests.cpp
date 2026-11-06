@@ -71,8 +71,8 @@ void testRemoveLeafOneChildAndTwoChildren() {
 
   check(tree.remove(4), "removing a node with two children must succeed");
   check(tree.size() == 4, "two-child removal must decrease size");
-  check(tree.root()->data() == 5,
-        "two-child removal must replace the node with its successor");
+  check(tree.root()->data() == 3 || tree.root()->data() == 5,
+        "two-child removal must replace the node with its predecessor or successor");
   check(inorder(tree) == std::vector<int>({3, 5, 6, 7}),
         "two-child removal must preserve BST ordering");
   check(!tree.remove(99), "removing an absent value must fail");

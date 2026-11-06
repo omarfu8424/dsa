@@ -1,5 +1,7 @@
+#pragma once
 #include "BinNode.h"
 #include "BinTree.h"
+#include <random>
 template <typename K, typename V> struct Entry {
   K key;
   V value;
@@ -33,7 +35,7 @@ public:
     }
   }
   virtual BinNodePosi<T> insert(const T &e) {
-    BinNodePosi<T>& p = search(e);
+    BinNodePosi<T> &p = search(e);
     if (p) {
       return nullptr;
     }
@@ -44,6 +46,38 @@ public:
   }
   // x是search传进来的
   // hot是x的父节点
+  static BinNodePosi<T> removeAtSwitchWithPredOrSucc(BinNodePosi<T> &x,
+                                                     BinNodePosi<T> &hot) {
+    BinNodePosi<T> pRemove = x;
+    BinNodePosi<T> succ = nullptr;
+    if (!x->hasLChild()) {
+      succ = x = x->rc(); // 无左子树, 直接挂右子树(可能存在)
+    } else if (!x->hasRChild()) {
+      succ = x = x->lc(); // 有左无右, 直接挂左子树
+    } else {
+      static thread_local std::mt19937 generator(std::random_device{}());
+      std::uniform_int_distribution<int> distribution(0, 1);
+      pRemove = distribution(generator) == 0 ? x->succ() : x->pred();
+      T temp = x->data();
+      x->dataRef() = pRemove->data();
+      pRemove->dataRef() = temp;
+      BinNodePosi<T> u = pRemove->parent();
+
+      succ = pRemove->hasLChild() // pRemove有左孩子 -> pRemove是pred,
+                                  // 删掉后其唯一的孩子Lc要上来 反之,
+                                  // pRemove是succ, 删掉后其唯一的孩子Rc要上来
+                 ? pRemove->lc()
+                 : pRemove->rc();
+      (pRemove->isLChild() ? u->lcRef() : u->rcRef()) =
+          succ; // 搭桥, 隔离pRemove
+    }
+    hot = pRemove->parent();
+    if (succ) {
+      succ->parentRef() = hot;
+    }
+    delete pRemove;
+    return succ;
+  }
   static BinNodePosi<T> removeAt(BinNodePosi<T> &x, BinNodePosi<T> &hot) {
     BinNodePosi<T> pRemove = x;
     BinNodePosi<T> succ = nullptr;
@@ -57,11 +91,10 @@ public:
       x->dataRef() = pRemove->data();
       pRemove->dataRef() = temp;
       BinNodePosi<T> u = pRemove->parent();
-      (u == x) ? u->rcRef() : u->lcRef() = pRemove->rc();
-      succ = pRemove->rc();
+      ((u == x) ? u->rcRef() : u->lcRef()) = succ = pRemove->rc();
     }
     hot = pRemove->parent();
-    if(succ) {
+    if (succ) {
       succ->parentRef() = hot;
     }
     delete pRemove;
