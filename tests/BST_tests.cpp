@@ -1,4 +1,5 @@
 #include "BST.h"
+#include "BinNode.h"
 
 #include <functional>
 #include <iostream>
@@ -72,11 +73,24 @@ void testRemoveLeafOneChildAndTwoChildren() {
   check(tree.remove(4), "removing a node with two children must succeed");
   check(tree.size() == 4, "two-child removal must decrease size");
   check(tree.root()->data() == 3 || tree.root()->data() == 5,
-        "two-child removal must replace the node with its predecessor or successor");
+        "two-child removal must replace the node with its predecessor or "
+        "successor");
   check(inorder(tree) == std::vector<int>({3, 5, 6, 7}),
         "two-child removal must preserve BST ordering");
   check(!tree.remove(99), "removing an absent value must fail");
   check(tree.size() == 4, "failed removal must not change size");
+}
+
+void testHeight() {
+  BST<int> tree;
+  makeTree(tree);
+
+  check(tree.root()->height() == 2, "wrong height after insert");
+  tree.remove(1);
+  tree.remove(3);
+  tree.remove(5);
+  tree.remove(7);
+  check(tree.root()->height() == 1, "wrong height after remove");
 }
 
 using Test = std::pair<const char *, std::function<void()>>;
@@ -89,7 +103,7 @@ int main() {
       {"insert, search, and duplicate", testInsertSearchAndDuplicate},
       {"remove leaf, one child, and two children",
        testRemoveLeafOneChildAndTwoChildren},
-  };
+      {"test height", testHeight}};
 
   for (const auto &[name, test] : tests) {
     try {

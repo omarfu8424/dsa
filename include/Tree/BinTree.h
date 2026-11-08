@@ -11,7 +11,7 @@ protected:
   BinNodePosi<T> &rootRef() { return _root; }
   void increaseSize() { ++_size; }
   void decreaseSize(Rank n = 1) { _size -= n; }
-  Rank stature(BinNodePosi<T> p) { return p ? p->height() : -1; }
+  static Rank stature(BinNodePosi<T> p) { return p ? p->height() : -1; }
   virtual Rank updateHeight(BinNodePosi<T> x) {
     return x->heightRef() = 1 + std::max(stature(x->lc()), stature(x->rc()));
   }
@@ -123,7 +123,7 @@ public:
     return x->rc();
   }
 
-  Rank remove(BinNodePosi<T> subRoot) {
+  virtual Rank remove(BinNodePosi<T> subRoot) {
     if (subRoot == nullptr) {
       return 0;
     }
@@ -143,12 +143,23 @@ public:
     _size -= n;
     return n;
   }
-  Rank removeAt(BinNodePosi<T> p) {
+  virtual Rank removeAt(BinNodePosi<T> p) {
     if (p == nullptr) {
       return 0;
     }
     Rank n = 1 + removeAt(p->rc()) + removeAt(p->lc());
     delete p;
     return n;
+  }
+  virtual void printTree(BinNodePosi<T> subRoot, int depth = 0) {
+    if (subRoot == nullptr) {
+      return;
+    }
+    printTree(subRoot->rc(), depth + 1);
+    for (int i = 0; i < depth; ++i) {
+      std::cout << "    ";
+    }
+    std::cout << subRoot->data() << std::endl;
+    printTree(subRoot->lc(), depth + 1);
   }
 };

@@ -4,6 +4,7 @@
 #include <stack>
 template <typename T> struct BinNode;
 template <typename T> using BinNodePosi = BinNode<T> *;
+template <typename T> using ConstBinNodePosi = const BinNode<T> *;
 using Rank = int;
 // 遍历实现方式
 enum class TravImpl { Iteration, Recursion };
@@ -162,20 +163,43 @@ public:
   BinNodePosi<T> lc() const { return _lc; }
   BinNodePosi<T> rc() const { return _rc; }
   Rank height() const { return _height; }
-  BinNodePosi<T> succ() {
-    BinNodePosi<T> s = this;
-    if (s->hasRChild()) {
-      s = s->rc();
-      while (s->hasLChild()) {
-        s = s->lc();
+  ConstBinNodePosi<T> succ() const {
+    ConstBinNodePosi<T> p = this;
+    if (p->hasRChild()) {
+      p = p->rc();
+      while (p->hasLChild()) {
+        p = p->lc();
       }
     } else {
-      while (s->isRChild()) {
-        s = s->parent();
+      while (p->isRChild()) {
+        p = p->parent();
       }
-      s = s->parent();
+      p = p->parent();
     }
-    return s;
+    return p;
+  }
+  BinNodePosi<T> succ() {
+    return const_cast<BinNodePosi<T>>(
+        static_cast<ConstBinNodePosi<T>>(this)->succ());
+  }
+  ConstBinNodePosi<T> pred() const {
+    ConstBinNodePosi<T> p = this;
+    if (p->hasLChild()) {
+      p = p->lc();
+      while (p->hasRChild()) {
+        p = p->rc();
+      }
+    } else {
+      while (p->isLChild()) {
+        p = p->parent();
+      }
+      p = p->parent();
+    }
+    return p;
+  }
+  BinNodePosi<T> pred() {
+    return const_cast<BinNodePosi<T>>(
+        static_cast<ConstBinNodePosi<T>>(this)->pred());
   }
 
   // 写访问器
