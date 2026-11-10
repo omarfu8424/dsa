@@ -70,24 +70,39 @@ int main() {
   const std::vector<int> sizes{127, 511, 2047};
   std::mt19937 generator(seed);
 
+  std::cout << "BST tree height experiment\n";
   std::cout << "seed=" << seed << ", samples=" << samples << '\n';
-  std::cout << "n,random_mean_height,random_mean_height_over_ln_n,"
-               "sorted_height,balanced_height\n";
+  std::cout << "+--------+----------------------+----------------------+-------"
+               "-----------"
+               "+--------------------+\n"
+            << "| " << std::left << std::setw(6) << "n"
+            << " | " << std::setw(20) << "random mean height"
+            << " | " << std::setw(20) << "random / ln(n)"
+            << " | " << std::setw(16) << "sorted height"
+            << " | " << std::setw(18) << "balanced height" << " |\n"
+            << "+--------+----------------------+----------------------+-------"
+               "-----------"
+               "+--------------------+\n";
 
   for (int n : sizes) {
     const double randomHeight = averageRandomHeight(n, samples, generator);
     const int sortedHeight = makeSortedTreeHeight(n);
     const int balancedHeight = makeBalancedTreeHeight(n);
-    const int expectedBalancedHeight =
-        static_cast<int>(std::ceil(std::log2(n + 1))) - 1;
 
-    if (sortedHeight != n - 1 || balancedHeight > expectedBalancedHeight) {
+    if (sortedHeight != n - 1 ||
+        balancedHeight > static_cast<int>(std::ceil(std::log2(n + 1))) - 1) {
       std::cerr << "height invariant failed for n=" << n << '\n';
       return 1;
     }
 
-    std::cout << n << ',' << std::fixed << std::setprecision(3)
-              << randomHeight << ',' << randomHeight / std::log(n) << ','
-              << sortedHeight << ',' << balancedHeight << '\n';
+    std::cout << "| " << std::right << std::setw(6) << n << " | " << std::fixed
+              << std::setprecision(3) << std::setw(20) << randomHeight << " | "
+              << std::setw(20) << randomHeight / std::log(n) << " | "
+              << std::setw(16) << sortedHeight << " | " << std::setw(18)
+              << balancedHeight << " |\n";
   }
+
+  std::cout << "+--------+----------------------+----------------------+-------"
+               "-----------"
+               "+--------------------+\n";
 }
