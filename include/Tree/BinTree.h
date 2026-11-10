@@ -24,6 +24,12 @@ protected:
       x = x->parent();
     }
   }
+  BinNodePosi<T> &fromParentTo(BinNodePosi<T> p) {
+    if (p->isRoot()) {
+      return this->_root;
+    }
+    return p->isLChild() ? p->parent()->lcRef() : p->parent()->rcRef();
+  }
 
 public:
   BinTree() : _root(nullptr) {}
@@ -151,15 +157,18 @@ public:
     delete p;
     return n;
   }
-  virtual void printTree(BinNodePosi<T> subRoot, int depth = 0) {
+  virtual void printSubTree(BinNodePosi<T> subRoot, int depth = 0) {
     if (subRoot == nullptr) {
       return;
     }
-    printTree(subRoot->rc(), depth + 1);
+    printSubTree(subRoot->rc(), depth + 1);
     for (int i = 0; i < depth; ++i) {
       std::cout << "    ";
     }
     std::cout << subRoot->data() << std::endl;
-    printTree(subRoot->lc(), depth + 1);
+    printSubTree(subRoot->lc(), depth + 1);
+  }
+  virtual void printTree(){
+    printSubTree(_root);
   }
 };

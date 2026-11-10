@@ -209,6 +209,7 @@ public:
   BinNodePosi<T> &rcRef() { return _rc; }
   Rank &heightRef() { return _height; }
 
+
   [[nodiscard]] Rank size() const {
     Rank s = 1;
     if (_lc) {

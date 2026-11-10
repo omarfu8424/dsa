@@ -15,6 +15,64 @@ template <typename K, typename V> struct Entry {
 template <typename T> class BST : public BinTree<T> {
 protected:
   BinNodePosi<T> _hot;
+  // 按下面的方式组织3个结点与4棵子树, 使之成为一棵高度平衡的二叉搜索树
+  // 返回新的子树根节点 b
+  /***********
+        b
+      /   \
+     a     c
+    / \   / \
+   T0 T1 T2 T3
+  ***********/
+  BinNodePosi<T> connect34(BinNodePosi<T> a, BinNodePosi<T> b, BinNodePosi<T> c,
+                           BinNodePosi<T> T0, BinNodePosi<T> T1,
+                           BinNodePosi<T> T2, BinNodePosi<T> T3) {
+    a->lcRef() = T0;
+    if (T0) {
+      T0->parentRef() = a;
+    }
+    a->rcRef() = T1;
+    if (T1) {
+      T1->parentRef() = a;
+    }
+    this->updateHeight(a);
+    c->lcRef() = T2;
+    if (T2) {
+      T2->parentRef() = c;
+    }
+    c->rcRef() = T3;
+    if (T3) {
+      T3->parentRef() = c;
+    }
+    this->updateHeight(c);
+    b->lcRef() = a;
+    a->parentRef() = b;
+    b->rcRef() = c;
+    c->parentRef() = b;
+    this->updateHeight(b);
+    return b; // 返回新的子树根节点
+  }
+  BinNodePosi<T> rotateAt(BinNodePosi<T> v) {
+    BinNodePosi<T> p = v->parent();
+    BinNodePosi<T> g = p->parent();
+    if (p->isLChild()) {
+      if (v->isLChild()) { // zig-zig
+        p->parentRef() = g->parent();
+        return connect34(v, p, g, v->lc(), v->rc(), p->rc(), g->rc());
+      } else { // zig-zag
+        v->parentRef() = g->parent();
+        return connect34(p, v, g, p->lc(), v->lc(), v->rc(), g->rc());
+      }
+    } else {
+      if (v->isRChild()) { // zag-zag
+        p->parentRef() = g->parent();
+        return connect34(g, p, v, g->lc(), p->lc(), v->lc(), v->rc());
+      } else { // zag-zig
+        v->parentRef() = g->parent();
+        return connect34(g, v, p, g->lc(), v->lc(), v->rc(), p->rc());
+      }
+    }
+  }
 
 public:
   // 返回命中元素的引用, 若未命中,
@@ -41,7 +99,7 @@ public:
     }
     p = new BinNode<T>(e, _hot);
     this->increaseSize();
-    this->updateHeightAbove(p);
+    this->updateHeightAbove(_hot);
     return p;
   }
   // x是search传进来的
