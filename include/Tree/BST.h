@@ -136,6 +136,8 @@ public:
     delete pRemove;
     return succ;
   }
+  // 未动size, 需调用者维护
+  // 可导致左子树高度偏大
   static BinNodePosi<T> removeAt(BinNodePosi<T> &x, BinNodePosi<T> &hot) {
     BinNodePosi<T> pRemove = x;
     BinNodePosi<T> succ = nullptr;
