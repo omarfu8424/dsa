@@ -50,6 +50,11 @@ add_executable(AVL_height_experiment tests/AVL_height_experiment.cpp)
 target_link_libraries(AVL_height_experiment PRIVATE Tree)
 add_test(NAME AVL_height_experiment COMMAND AVL_height_experiment)
 
+
+add_library(Graph INTERFACE)
+target_include_directories(Graph INTERFACE ${PROJECT_INCLUDE_DIR}/Graph)
+
+
 add_library(String STATIC src/String/String_implementation.cpp)
 target_include_directories(String PUBLIC ${PROJECT_INCLUDE_DIR}/String)
 add_executable(string_main src/String/main.cpp)
