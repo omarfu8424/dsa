@@ -22,11 +22,10 @@
           "color": "#33ff00"
         }
       },
-      "command": "g++",
+      "command": "bash",
       "args": [
-        "-g",
+        "${workspaceFolder}/.vscode/build.sh",
         "${file}",
-        "-o",
         "${workspaceFolder}/${relativeFileDirname}/output/${fileBasenameNoExtension}"
       ],
       "group": {
