@@ -9,20 +9,33 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 enable_testing()
 
 set(PROJECT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# 所有模块共享的头文件搜索路径，等价于 .vscode/build.sh 的行为。
+# 同时暴露 include 根目录，使 "Graph/GraphList.h" 这类带前缀写法也能解析。
+add_library(dsa_headers INTERFACE)
+target_include_directories(dsa_headers INTERFACE
+  ${PROJECT_INCLUDE_DIR}
+  ${PROJECT_INCLUDE_DIR}/List
+  ${PROJECT_INCLUDE_DIR}/Matrix
+  ${PROJECT_INCLUDE_DIR}/Tree
+  ${PROJECT_INCLUDE_DIR}/String
+  ${PROJECT_INCLUDE_DIR}/Fib
+  ${PROJECT_INCLUDE_DIR}/Graph
+)
+
 
 # Header-only modules expose their public headers through the include tree.
 add_library(List INTERFACE)
-target_include_directories(List INTERFACE ${PROJECT_INCLUDE_DIR}/List)
+target_link_libraries(List INTERFACE dsa_headers)
 add_executable(List_main src/List/main.cpp)
 target_link_libraries(List_main PRIVATE List)
 add_executable(List_polynominal src/List/polynominal.cpp)
 target_link_libraries(List_polynominal PRIVATE List)
 
 add_library(Matrix INTERFACE)
-target_include_directories(Matrix INTERFACE ${PROJECT_INCLUDE_DIR}/Matrix)
+target_link_libraries(Matrix INTERFACE dsa_headers)
 
 add_library(Tree INTERFACE)
-target_include_directories(Tree INTERFACE ${PROJECT_INCLUDE_DIR}/Tree)
+target_link_libraries(Tree INTERFACE dsa_headers)
 add_executable(Tree_bintree src/Tree/BinTree.cpp)
 target_link_libraries(Tree_bintree PRIVATE Tree)
 add_executable(tree_Huffman src/Tree/Huffman.cpp)
@@ -52,14 +65,26 @@ add_test(NAME AVL_height_experiment COMMAND AVL_height_experiment)
 
 
 add_library(Graph INTERFACE)
-target_include_directories(Graph INTERFACE ${PROJECT_INCLUDE_DIR}/Graph)
+target_link_libraries(Graph INTERFACE dsa_headers)
+
+add_executable(GraphMatrix_tests tests/GraphMatrix_tests.cpp)
+target_link_libraries(GraphMatrix_tests PRIVATE Graph)
+add_test(NAME GraphMatrix_tests COMMAND GraphMatrix_tests)
+
+add_executable(GraphList_tests tests/GraphList_tests.cpp)
+target_link_libraries(GraphList_tests PRIVATE Graph)
+add_test(NAME GraphList_tests COMMAND GraphList_tests)
+
+
 
 
 add_library(String STATIC src/String/String_implementation.cpp)
-target_include_directories(String PUBLIC ${PROJECT_INCLUDE_DIR}/String)
+target_link_libraries(String PUBLIC dsa_headers)
 add_executable(string_main src/String/main.cpp)
 target_link_libraries(string_main PRIVATE String)
 
+# 单文件程序同样链接 dsa_headers：clangd 给孤立头文件插值编译命令时会随机
+# 挑一条，只要有任何一条命令缺少 -I，头文件就会报 file not found。
 add_executable(hello src/hello.cpp)
 add_executable(sum_basic src/sum/basic.cpp)
 add_executable(sort_basic src/sort/basic.cpp)
@@ -68,11 +93,19 @@ add_executable(stack_expression src/Stack/expression.cpp)
 add_executable(stack_convert src/Stack/convert.cpp)
 add_executable(stack_matchBraces src/Stack/matchBraces.cpp)
 add_executable(stack_queen src/Stack/queen.cpp)
+target_link_libraries(hello PRIVATE dsa_headers)
+target_link_libraries(sum_basic PRIVATE dsa_headers)
+target_link_libraries(sort_basic PRIVATE dsa_headers)
+target_link_libraries(stack_RPN PRIVATE dsa_headers)
+target_link_libraries(stack_expression PRIVATE dsa_headers)
+target_link_libraries(stack_convert PRIVATE dsa_headers)
+target_link_libraries(stack_matchBraces PRIVATE dsa_headers)
+target_link_libraries(stack_queen PRIVATE dsa_headers)
 
 add_executable(fib_main src/Fib/main.cpp)
-target_include_directories(fib_main PRIVATE ${PROJECT_INCLUDE_DIR}/Fib)
+target_link_libraries(fib_main PRIVATE dsa_headers)
 add_executable(fib_basic src/Fib/basic.cpp)
-target_include_directories(fib_basic PRIVATE ${PROJECT_INCLUDE_DIR}/Fib)
+target_link_libraries(fib_basic PRIVATE dsa_headers)
 
 add_executable(search_basic src/search/basic.cpp)
-target_include_directories(search_basic PRIVATE ${PROJECT_INCLUDE_DIR}/Fib)
+target_link_libraries(search_basic PRIVATE dsa_headers)
