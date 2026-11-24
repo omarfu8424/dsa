@@ -30,14 +30,15 @@ public:
   // assert: vertex should exists.
   Vertex<Tv> &v(int i) override { return _V[i]; }
   // assert: edge should exists.
-  Edge<Te> &edgeAt(int i, int j) override { return _E[i][j]; }
+  Edge<Te> &edgeAt(int i, int j) override { return *_E[i][j]; }
 
   // edge
+  int edgeCount(){return e;}
   bool exists(int i, int j) override {
-    return (i > 0 && i < n) && (j > 0 && j < n) && (_E[i][j] != nullptr);
+    return (i >= 0 && i < n) && (j >= 0 && j < n) && (_E[i][j] != nullptr);
   }
   // i -> j
-  void insert(Te const &edge, int w, int i, int j) {
+  void insert(Te const &edge, int w, int i, int j) override{
     if (exists(i, j)) {
       return;
     }
@@ -46,7 +47,7 @@ public:
     _V[i].outdegree++;
     _V[j].indegree++;
   }
-  Te remove(int i, int j) {
+  Te remove(int i, int j) override{
     assert(exists(i, j));
     Te backUp = edgeAt(i, j).data;
     delete _E[i][j];
@@ -56,13 +57,13 @@ public:
     _V[j].indegree--;
     return backUp;
   }
-  int firstNbr(int i);
 
   // vertex
+  int vertexCount(){return n;}
   // return new vertex's index
   int insert(Tv const &vertex) override {
-    for (int e = 0; e < n; ++e) {
-      _E[e].push_back(nullptr); // for each existing row, insert a new column
+    for (int r = 0; r < n; ++r) {
+      _E[r].push_back(nullptr); // for each existing row, insert a new column
     }
     n++;
     // insert a new row
@@ -70,7 +71,7 @@ public:
     _V.push_back(Vertex<Tv>(vertex));
     return n - 1;
   }
-  Tv remove(int i) {
+  Tv remove(int i) override{
     assert(i >= 0 && i < n);
     Tv backUp = v(i).data;
 
@@ -92,5 +93,10 @@ public:
     return backUp;
   }
 
-  int nextNbr(int i, int j);
+  int firstNbr(int i) override{ return nextNbr(i, n); }
+  int nextNbr(int i, int j) override{
+    while (j > -1 && !exists(i, --j)) {
+    }
+    return j;
+  }
 };
