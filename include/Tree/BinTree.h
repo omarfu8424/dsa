@@ -157,7 +157,10 @@ public:
     delete p;
     return n;
   }
-  virtual void printSubTree(BinNodePosi<T> subRoot, int depth = 0) {
+  // 打印不是多态接口的一部分: 没有子类覆盖它, _root 也是基类私有.
+  // 必须保持非虚: 虚函数会进 vtable, 而 vtable 会强制实例化, 从而让
+  // "每个 T 都必须支持 <<" 变成编译期硬约束(即使从不打印).
+  void printSubTree(BinNodePosi<T> subRoot, int depth = 0) {
     if (subRoot == nullptr) {
       return;
     }
@@ -168,7 +171,5 @@ public:
     std::cout << subRoot->data() << std::endl;
     printSubTree(subRoot->lc(), depth + 1);
   }
-  virtual void printTree(){
-    printSubTree(_root);
-  }
+  void printTree() { printSubTree(_root); }
 };
