@@ -1,6 +1,7 @@
 #pragma once
 #include "List.h"
 #include <iostream>
+#include <utility>
 
 // protected
 template <typename T> void List<T>::init() {
@@ -11,6 +12,9 @@ template <typename T> void List<T>::init() {
   _size = 0;
 }
 template <typename T> Rank List<T>::clear() {
+  if (_header == nullptr) {
+    return 0;
+  }
   Rank old = _size;
   for (ListNodePosit<T> i = _header->succ; i != _trailer;) {
     ListNodePosit<T> next = i->succ;
@@ -41,16 +45,26 @@ List<T>::List(List<T> const &L, Rank r, Rank n) {
   copy_nodes(p, n);
 }
 template <typename T>
-List<T>::List(List &&L) noexcept
-    : _size(L._size), _header(L._header), _trailer(L._trailer) {
-  L._size = 0;
-  L._header = nullptr;
-  L._trailer = nullptr;
+List<T>::List(List &&L) noexcept : List() {
+  // 委托默认构造先建好空列表哨兵,再走移动赋值交换:this 取走 L 的全部资源,
+  // L 得到 this 的空哨兵,成为可继续使用的空列表。
+  // 注:noexcept 下 init() 的分配若失败会 terminate;若需强异常安全可移除 noexcept。
+  *this = std::move(L);
 }
 template <typename T> List<T> &List<T>::operator=(List<T> const &L) {
   if (this != &L) {
     clear();
     copy_nodes(L.first(), L._size);
+  }
+  return *this;
+}
+template <typename T> List<T> &List<T>::operator=(List<T> &&L) noexcept {
+  if (this != &L) {
+    clear(); // 释放自身节点、保留哨兵,this 成为空列表
+    // 与 L 整体交换:this 接管 L 的全部资源,L 获得 this 的空哨兵,仍可继续使用
+    std::swap(_size, L._size);
+    std::swap(_header, L._header);
+    std::swap(_trailer, L._trailer);
   }
   return *this;
 }
@@ -191,15 +205,35 @@ template <typename T> void List<T>::sort_select(ListNodePosit<T> p, Rank n) {
   }
 }
 
-template <typename T> void List<T>::sort_merge(ListNodePosit<T>& p, Rank n){
-  if(n < 2){return;}
+template <typename T> void List<T>::sort_merge(ListNodePosit<T> &p, Rank n) {
+  if (n < 2) {
+    return;
+  }
   Rank mid = n >> 1;
   ListNodePosit<T> q = p;
-  for(int i = 0; i < mid; ++i){q = q->succ;}
+  for (int i = 0; i < mid; ++i) {
+    q = q->succ;
+  }
   sort_merge(p, mid);
-  sort_merge(q, n-mid);
-  p = merge(p, n, *this, q, n-mid);
+  sort_merge(q, n - mid);
+  p = merge(p, n, *this, q, n - mid);
 }
-template <typename T> ListNodePosit<T> List<T>::merge(ListNodePosit<T> p, Rank n, List<T>& l, ListNodePosit<T> q, Rank m){
-  
+template <typename T>
+ListNodePosit<T> List<T>::merge(ListNodePosit<T> p, Rank n, List<T> &l,
+                                ListNodePosit<T> q, Rank m) {
+  ListNodePosit<T> pp = p->pred; // 借助前驱,便于返回归并后区间的起点
+  while (0 < m) {                // 在 q 尚未移出区间之前
+    if ((0 < n) && (p->data <= q->data)) { // 若 p 仍在区间内且 v(p) <= v(q)
+      if (q == (p = p->succ)) {           // p 归入合并列表,并替换为其直接后继
+        break; // 若 p 已越过 q(自归并场景),退出
+      }
+      n--;
+    } else { // 若 p 已超出右界或 v(q) < v(p)
+      ListNodePosit<T> old = q;
+      q = q->succ;
+      insert_before(l.remove(old), p); // 将 q 的原节点整体转移至 p 之前
+      m--;
+    }
+  }
+  return pp->succ; // 确定归并后区间的(新)起点
 }

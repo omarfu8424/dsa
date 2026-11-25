@@ -31,6 +31,10 @@ target_link_libraries(List_main PRIVATE List)
 add_executable(List_polynominal src/List/polynominal.cpp)
 target_link_libraries(List_polynominal PRIVATE List)
 
+add_executable(List_tests tests/List_tests.cpp)
+target_link_libraries(List_tests PRIVATE List)
+add_test(NAME List_tests COMMAND List_tests)
+
 add_library(Matrix INTERFACE)
 target_link_libraries(Matrix INTERFACE dsa_headers)
 

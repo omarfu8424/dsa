@@ -48,12 +48,12 @@ public:
     return p && (p != _header) && (p != _trailer);
   }
   ListNodePosit<T>
-  find(T x, Rank n,
-       ListNodePosit<T> end) const; // finding x in unsorted range [end-n, end)
+  // finding x in unsorted range [end-n, end)
+  find(T x, Rank n, ListNodePosit<T> end) const;
   ListNodePosit<T> find(T const x) const { return find(x, _size, _trailer); }
   ListNodePosit<T>
-  search(T x, Rank n,
-         ListNodePosit<T> end) const; // finding x in sorted range [end-n, end)
+  // finding x in sorted range [end-n, end)
+  search(T x, Rank n, ListNodePosit<T> end) const;
   ListNodePosit<T> search(T const x) const {
     return search(x, _size, _trailer);
   }
@@ -75,8 +75,9 @@ public:
   void sort_select(ListNodePosit<T> p,
                    Rank n); // 对p起n项进行插入排序，(p, p+n]
   void sort_select() { sort_select(_header, _size); }
-  ListNodePosit<T>  merge(ListNodePosit<T> p, Rank n, List<T> &l, ListNodePosit<T> q,
-             Rank m);                           // 将l中q起m项归并到[p, p+n)中
+  ListNodePosit<T> merge(ListNodePosit<T> p, Rank n, List<T> &l,
+                         ListNodePosit<T> q,
+                         Rank m);               // 将l中q起m项归并到[p, p+n)中
   void sort_merge(ListNodePosit<T> &p, Rank n); //[p, p+n)
 };
 
